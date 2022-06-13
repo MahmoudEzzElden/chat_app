@@ -6,9 +6,11 @@ import 'package:miniflutter/controller/providers/checkbox_provider.dart';
 import 'package:miniflutter/controller/providers/edit_user_data.dart';
 import 'package:miniflutter/controller/providers/firebase_provider.dart';
 import 'package:miniflutter/controller/providers/gender_provider.dart';
+import 'package:miniflutter/controller/providers/user_image.dart';
 import 'package:miniflutter/view/screens/HomePage.dart';
 import 'package:miniflutter/view/screens/SignUpScreen.dart';
 import 'package:miniflutter/view/screens/chat_room.dart';
+import 'package:miniflutter/view/screens/profile_image_edit.dart';
 import 'package:miniflutter/view/screens/reset_password.dart';
 import 'package:provider/provider.dart';
 import 'view/screens/LogInScreen.dart';
@@ -25,8 +27,10 @@ void main() async {
             create: (context) => TermsProvider()),
         ChangeNotifierProvider<EditProvider>(
             create: (context) => EditProvider()),
-        ChangeNotifierProvider<FirebaseProvider>(
-            create: (context) => FirebaseProvider()),
+        // ChangeNotifierProvider<FirebaseProvider>(
+        //     create: (context) => FirebaseProvider()),
+        ChangeNotifierProvider<ImageHandler>(
+            create: (context) => ImageHandler()),
 
 
 
@@ -67,6 +71,7 @@ class MyApp extends StatelessWidget {
         HomePage.routeName: (context) => HomePage(),
         ResetPassword.routeName: (context) => ResetPassword(),
         ChatRoom.routeName:(context)=>ChatRoom(),
+        ImageEdit.routeName:(context)=>ImageEdit(),
       },
       home: Splash(),
       builder: EasyLoading.init(), //

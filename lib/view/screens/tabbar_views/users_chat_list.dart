@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:miniflutter/controller/providers/firebase_provider.dart';
 import 'package:miniflutter/model/chat_room_model.dart';
+import 'package:miniflutter/model/constants.dart';
 import 'package:miniflutter/model/user_model.dart';
 import 'package:miniflutter/services/firebase_auth.dart';
 import 'package:miniflutter/view/screens/chat_room.dart';
@@ -31,57 +32,50 @@ class _UsersChatListState extends State<UsersChatList> {
           stream: FireBaseService.getAllUsers(),
           builder: (context, snapshot) {
             return snapshot.hasData
-                ? ListView.builder(
-                    itemCount: snapshot.requireData.size,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        contentPadding: EdgeInsets.symmetric(vertical: 10),
-                        leading: CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Color(0xff4c505b),
-                          child: Text(snapshot
-                              .requireData.docs[index]['User Name']
-                              .toString()[0]
-                              .toUpperCase()),
-                        ),
-                        title: Text(
-                          snapshot.requireData.docs[index]['User Name'],
-                        ),
-                        onTap: () async {
-                          //this is an edit
-                          // ChatRoomModel chat=ChatRoomModel();
-                          String chatRoomId =
-                              '${FirebaseAuth.instance.currentUser!.uid}_${snapshot.requireData.docs[index]['User ID']}';
-                          String createdChatRoomId =
-                              await FireBaseService.createChatRoom(chatRoomId);
-                          print(createdChatRoomId);
-                          //
-                          // Map map={
-                          //
-                          //   'firstId':FirebaseAuth.instance.currentUser!.uid,
-                          //   'secondId':snapshot.requireData.docs[index]['User ID'],
-                          //   'secondUserName':snapshot.requireData.docs[index]['User Name'],
-                          //   'chatRoomId':createdChatRoomId
-                          // };
+                ? Container(
+              padding: EdgeInsets.all(20),
+                  child: ListView.builder(
+                      itemCount: snapshot.requireData.size,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          contentPadding: EdgeInsets.symmetric(vertical: 10),
+                          leading: CircleAvatar(
+                            radius: 30,
+                            backgroundImage: NetworkImage(snapshot.requireData.docs[index][profilePic]),
+                          ),
+                          title: Text(
+                            snapshot.requireData.docs[index][usersName],
+                          ),
+                          onTap: () async {
+                            String chatRoomId =
+                                '${FirebaseAuth.instance.currentUser!.uid}_${snapshot.requireData.docs[index][usersID]}';
+                            String createdChatRoomId =
+                                await FireBaseService.createChatRoom(chatRoomId);
+                            print(createdChatRoomId);
 
-                          Navigator.pushNamed(context, ChatRoom.routeName,
-                              arguments: ChatRoomModel(
-                                  firstUserID:
-                                      FirebaseAuth.instance.currentUser!.uid,
-                                  secondUserID: snapshot.requireData.docs[index]
-                                      ['User ID'],
-                                  secondUserName: snapshot
-                                      .requireData.docs[index]['User Name'],
-                                  chatRoomId: createdChatRoomId)
-                              // arguments: map
-                              );
-                        },
-                      );
-                    },
-                  )
+
+                            Navigator.pushNamed(context, ChatRoom.routeName,
+                                arguments: ChatRoomModel(
+                                    firstUserID:
+                                        FirebaseAuth.instance.currentUser!.uid,
+                                    secondUserID: snapshot.requireData.docs[index]
+                                        [usersID],
+                                    secondUserName: snapshot
+                                        .requireData.docs[index][usersName],
+
+                                    chatRoomId: createdChatRoomId,
+                                  profilePic: snapshot.requireData.docs[index][profilePic]
+                                )
+
+                                );
+                          },
+                        );
+                      },
+                    ),
+                )
                 : snapshot.hasError
                     ? const Text('Sorry, Error Happened')
-                    : const CircularProgressIndicator();
+                    : const Center(child: CircularProgressIndicator(),);
           },
         ),
       ),

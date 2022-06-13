@@ -6,7 +6,7 @@ class SharedHandler{
   static String userNameKey = "USERNAMEKEY";
   static String userEmailKey = "USEREMAILKEY";
 
-
+///unused till now
   //Saving User Info in shared preferences
   static Future<bool> saveUserLoggedIn(bool isUserLoggedIn) async{
 

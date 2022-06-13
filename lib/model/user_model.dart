@@ -1,3 +1,5 @@
+
+//unused model
 class UserModel {
   List<User> data=[];
 
@@ -16,15 +18,18 @@ class User {
   String? userName;
   String? Age;
   String? Gender;
+  String? Url;
 
 
-  User({this.id, this.userName, this.Age, this.Gender});
+  User({this.id, this.userName, this.Age, this.Gender,this.Url});
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
         id: map['User ID'],
         userName: map['User Name'],
         Age: map['Age'],
-        Gender: map['Gender']);
+        Gender: map['Gender'],
+        Url:map['ProfilePic']
+    );
   }
 }

@@ -15,7 +15,6 @@ class HomePage extends StatelessWidget {
       child: Scaffold(
         drawer: DrawerWidget(),
         appBar: AppBar(
-
           bottom: TabBar(
             labelColor: Colors.black26,
             tabs: [

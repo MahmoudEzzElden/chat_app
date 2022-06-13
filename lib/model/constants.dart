@@ -6,9 +6,17 @@ const String secondUsersName='secondUserName';
 const String chatRoomID='chatRoomId';
 
 
-
 //-----------User Constants------------//
-// const String userName='User Name';
-// const String userID='User ID';
-// const String userAge='Age';
-// const String userGender='Gender';
+const String usersName='User Name';
+const String usersID='User ID';
+const String usersAge='Age';
+const String usersGender='Gender';
+const String profilePic='ProfilePic';
+const String usersCollection='Users';
+const String chatRoomsCollection='ChatRooms';
+
+
+//-----------Message Constants--------------//
+const String sentBy='SentBy';
+const String messageContent='Message';
+const String createdTime='Create Time';
