@@ -4,7 +4,6 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:miniflutter/controller/providers/checkbox_provider.dart';
 import 'package:miniflutter/controller/providers/edit_user_data.dart';
-import 'package:miniflutter/controller/providers/firebase_provider.dart';
 import 'package:miniflutter/controller/providers/gender_provider.dart';
 import 'package:miniflutter/controller/providers/user_image.dart';
 import 'package:miniflutter/view/screens/HomePage.dart';
@@ -12,12 +11,17 @@ import 'package:miniflutter/view/screens/SignUpScreen.dart';
 import 'package:miniflutter/view/screens/chat_room.dart';
 import 'package:miniflutter/view/screens/profile_image_edit.dart';
 import 'package:miniflutter/view/screens/reset_password.dart';
+import 'package:miniflutter/view/screens/user_profile_pic_details.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'view/screens/LogInScreen.dart';
+late final goHome;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  final ref= await SharedPreferences.getInstance();
+  goHome=ref.getBool('goHome');
   runApp(
     MultiProvider(
       providers: [
@@ -27,8 +31,6 @@ void main() async {
             create: (context) => TermsProvider()),
         ChangeNotifierProvider<EditProvider>(
             create: (context) => EditProvider()),
-        // ChangeNotifierProvider<FirebaseProvider>(
-        //     create: (context) => FirebaseProvider()),
         ChangeNotifierProvider<ImageHandler>(
             create: (context) => ImageHandler()),
 
@@ -72,6 +74,7 @@ class MyApp extends StatelessWidget {
         ResetPassword.routeName: (context) => ResetPassword(),
         ChatRoom.routeName:(context)=>ChatRoom(),
         ImageEdit.routeName:(context)=>ImageEdit(),
+        PictureMagnifier.routeName:(context)=>PictureMagnifier(),
       },
       home: Splash(),
       builder: EasyLoading.init(), //
@@ -85,19 +88,11 @@ class Splash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
-        splashIconSize: 200,
-        splash: Center(
-          child: Container(
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: 100,
-                  backgroundImage: AssetImage('assets/MF.png.jpg'),
-                )
-              ],
-            ),
-          ),
-        ),
-        nextScreen: LogInScreen());
+      backgroundColor: Color(0xFF585858),
+        splashTransition: SplashTransition.fadeTransition,
+splashIconSize:  MediaQuery.of(context).size.height,
+        splash: Image.asset('assets/splash.png')
+        ,
+        nextScreen:(goHome==false || goHome==null) ? LogInScreen():HomePage());
   }
 }

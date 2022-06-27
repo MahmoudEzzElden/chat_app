@@ -134,6 +134,7 @@ class _LogInScreenState extends State<LogInScreen> {
                                             emailController.clear();
                                             passwordController.clear();
                                           });
+
                                         },
                                         icon: Icon(
                                           Icons.arrow_forward,

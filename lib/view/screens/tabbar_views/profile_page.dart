@@ -1,30 +1,24 @@
-//import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:miniflutter/controller/providers/edit_user_data.dart';
-import 'package:miniflutter/controller/providers/firebase_provider.dart';
 import 'package:miniflutter/model/constants.dart';
 import 'package:miniflutter/services/firebase_auth.dart';
-import 'package:miniflutter/services/firebase_storage.dart';
 import 'package:miniflutter/view/custom_widgets/custom_button.dart';
-import 'package:miniflutter/view/custom_widgets/profile_image.dart';
 import 'package:miniflutter/view/screens/profile_image_edit.dart';
 import 'package:provider/provider.dart';
-import '../../../controller/providers/user_image.dart';
-import '../../../model/user_model.dart';
 import '../../styles/input_decoration.dart';
 
 class ProfilePage extends StatefulWidget {
+  const ProfilePage({Key? key}) : super(key: key);
+
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
-
   final userName = TextEditingController();
 
   final age = TextEditingController();
@@ -32,9 +26,6 @@ class _ProfilePageState extends State<ProfilePage> {
   final gender = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
-
-
-
 
   @override
   void dispose() {
@@ -44,69 +35,78 @@ class _ProfilePageState extends State<ProfilePage> {
     EasyLoading.dismiss();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: SingleChildScrollView(
-          child: StreamBuilder(
-            stream:
-            FirebaseFirestore.instance
-                .collection(usersCollection)
-                .doc(FirebaseAuth.instance.currentUser!.uid)
-                .snapshots(),
-            builder: (context, snapShot) {
+      body: SingleChildScrollView(
+        child: StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection(usersCollection)
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .snapshots(),
+          builder: (context, snapShot) {
+            var userDoc = snapShot.data;
 
-              var userDoc = snapShot.data;
-
-              return snapShot.hasData
-                  ? Column(
+            return snapShot.hasData
+                ? Column(
                     children: [
-                      SizedBox(height: 40,),
+                      const SizedBox(
+                        height: 40,
+                      ),
                       GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           Navigator.pushNamed(context, ImageEdit.routeName);
                         },
-                        child:
-                        CircleAvatar(
-                          backgroundImage: NetworkImage(
-
-                             (userDoc as DocumentSnapshot)[profilePic]
+                        child: CachedNetworkImage(
+                          imageUrl: (userDoc as DocumentSnapshot)[profilePic],
+                          imageBuilder: (context, imageProvider) => Container(
+                            width: 150,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  image: imageProvider, fit: BoxFit.cover),
+                            ),
                           ),
-                          radius: 70,
+                          placeholder: (context, url) =>
+                              const CircularProgressIndicator(),
+                          errorWidget: (context, url, error) => Container(
+                            color: Colors.black,
+                            child: const Icon(
+                              Icons.error,
+                              color: Colors.red,
+                            ),
+                          ),
                         ),
                       ),
-
                       Padding(
                         padding: const EdgeInsets.all(20),
                         child: TextFormField(
-                          readOnly: Provider
-                              .of<EditProvider>(context)
-                              .read,
+                          readOnly: Provider.of<EditProvider>(context).read,
                           controller: userName,
                           decoration: decorationText(
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            floatingLabelBehavior:
+                                FloatingLabelBehavior.always,
                             labelText: 'Name',
                             hintText:
-                            (userDoc as DocumentSnapshot)[usersName],
+                                (userDoc)[usersName],
                             prefixIcon: Icons.person,
                           ),
                         ),
                       ),
-
                       Padding(
                         padding: const EdgeInsets.only(
                             bottom: 20, left: 20, right: 20),
                         child: TextFormField(
                           keyboardType: TextInputType.number,
-                          readOnly: Provider
-                              .of<EditProvider>(context)
-                              .read,
+                          readOnly: Provider.of<EditProvider>(context).read,
                           controller: age,
                           decoration: decorationText(
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            floatingLabelBehavior:
+                                FloatingLabelBehavior.always,
                             labelText: 'Age',
-                            hintText: (userDoc as DocumentSnapshot)[usersAge],
+                            hintText: (userDoc)[usersAge],
                             prefixIcon: Icons.person,
                           ),
                         ),
@@ -114,19 +114,19 @@ class _ProfilePageState extends State<ProfilePage> {
                       Padding(
                         padding: const EdgeInsets.only(left: 20, right: 20),
                         child: TextFormField(
-                          readOnly: Provider
-                              .of<EditProvider>(context)
-                              .read,
+                          readOnly: Provider.of<EditProvider>(context).read,
                           controller: gender,
                           decoration: decorationText(
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            floatingLabelBehavior:
+                                FloatingLabelBehavior.always,
                             labelText: 'Gender',
-                            hintText: (userDoc as DocumentSnapshot)[usersGender],
+                            hintText:
+                                (userDoc)[usersGender],
                             prefixIcon: Icons.person,
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 30,
                       ),
                       Row(
@@ -138,7 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               text: 'Edit',
                               onPressed: () {
                                 Provider.of<EditProvider>(context,
-                                    listen: false)
+                                        listen: false)
                                     .readAndWrite();
                               }),
                           CustomElevatedButton(
@@ -146,24 +146,31 @@ class _ProfilePageState extends State<ProfilePage> {
                               height: 50.0,
                               text: 'Save',
                               onPressed: () {
-                                    FireBaseService.userUpdate(
-                                        context,
-                                        userName.text.isEmpty? (userDoc as DocumentSnapshot)[usersName]: userName.text,
-                                        age.text.isEmpty? (userDoc as DocumentSnapshot)[usersAge]: age.text,
-                                        gender.text.isEmpty? (userDoc as DocumentSnapshot)[usersGender]: gender.text);
-                                    Provider.of<EditProvider>(context,
+                                FireBaseService.userUpdate(
+                                    context,
+                                    userName.text.isEmpty
+                                        ? (userDoc)[usersName]
+                                        : userName.text,
+                                    age.text.isEmpty
+                                        ? (userDoc)[usersAge]
+                                        : age.text,
+                                    gender.text.isEmpty
+                                        ? (userDoc)[usersGender]
+                                        : gender.text);
+                                Provider.of<EditProvider>(context,
                                         listen: false)
-                                        .readAndWrite();
+                                    .readAndWrite();
                               }),
                         ],
                       )
                     ],
                   )
-                  : snapShot.hasError
-                  ? Text('Error Happened')
-                  :Center(child: CircularProgressIndicator(),);
-            },
-          ),
+                : snapShot.hasError
+                    ? const Text('Error Happened')
+                    : const Center(
+                        child: CircularProgressIndicator(),
+                      );
+          },
         ),
       ),
     );

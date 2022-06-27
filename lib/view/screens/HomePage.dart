@@ -3,7 +3,6 @@ import 'package:miniflutter/view/custom_widgets/drawer.dart';
 import 'package:miniflutter/view/screens/tabbar_views/users_chat_list.dart';
 import 'package:miniflutter/view/screens/tabbar_views/profile_page.dart';
 
-
 class HomePage extends StatelessWidget {
   static const String routeName = 'HomePage';
 

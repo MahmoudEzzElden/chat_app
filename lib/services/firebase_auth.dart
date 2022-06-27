@@ -6,6 +6,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:miniflutter/model/constants.dart';
 import 'package:miniflutter/view/screens/HomePage.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../controller/providers/user_image.dart';
 import 'firebase_storage.dart';
 
@@ -69,6 +70,8 @@ class FireBaseService {
       EasyLoading.show(status: 'Signing in...');
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      final ref = await SharedPreferences.getInstance();
+      ref.setBool('goHome', true);
       EasyLoading.showSuccess('Great Success');
       await Navigator.pushNamed(context, HomePage.routeName);
       EasyLoading.dismiss();

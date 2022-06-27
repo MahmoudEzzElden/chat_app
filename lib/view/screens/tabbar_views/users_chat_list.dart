@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,6 +9,7 @@ import 'package:miniflutter/model/constants.dart';
 import 'package:miniflutter/model/user_model.dart';
 import 'package:miniflutter/services/firebase_auth.dart';
 import 'package:miniflutter/view/screens/chat_room.dart';
+import 'package:miniflutter/view/screens/user_profile_pic_details.dart';
 import 'package:provider/provider.dart';
 
 class UsersChatList extends StatefulWidget {
@@ -39,9 +41,34 @@ class _UsersChatListState extends State<UsersChatList> {
                       itemBuilder: (context, index) {
                         return ListTile(
                           contentPadding: EdgeInsets.symmetric(vertical: 10),
-                          leading: CircleAvatar(
-                            radius: 30,
-                            backgroundImage: NetworkImage(snapshot.requireData.docs[index][profilePic]),
+                          leading: GestureDetector(
+                            onTap: (){
+                              Navigator.pushNamed(context, PictureMagnifier.routeName,arguments:snapshot.requireData.docs[index][profilePic] );
+                            },
+                            child: Hero(
+                              tag:snapshot.requireData.docs[index][profilePic] ,
+                              child: CachedNetworkImage(
+                                imageUrl:snapshot.requireData.docs[index][profilePic] ,
+                                imageBuilder: (context, imageProvider) => Container(
+                                  width: 80.0,
+                                  height: 80.0,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                        image: imageProvider, fit: BoxFit.cover),
+                                  ),
+                                ),
+                                placeholder: (context, url) => CircularProgressIndicator(),
+                                errorWidget: (context, url, error) => Container(
+                                  color: Colors.black,
+                                  child: Icon(
+                                    Icons.error,
+                                    color: Colors.red,
+                                  ),
+                                ),
+
+                              ),
+                            ),
                           ),
                           title: Text(
                             snapshot.requireData.docs[index][usersName],

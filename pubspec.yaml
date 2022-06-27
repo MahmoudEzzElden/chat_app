@@ -48,11 +48,22 @@ dependencies:
   flutter_easyloading: ^3.0.3
   firebase_storage: ^10.2.16
   shared_preferences: ^2.0.15
+  cached_network_image: ^3.0.0
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  flutter_launcher_icons: ^0.9.0
+
+
+
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/hablemos.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -79,6 +90,7 @@ flutter:
     - assets/MF.png.jpg
     - assets/login.png
     - assets/register.png
+    - assets/splash.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
