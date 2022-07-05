@@ -17,6 +17,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'view/screens/LogInScreen.dart';
 late final goHome;
 
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
